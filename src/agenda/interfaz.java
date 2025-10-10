@@ -173,6 +173,11 @@ public class interfaz extends javax.swing.JFrame {
         titulo.setText("AGENDA TELEFONICA");
 
         listarciudad.setText("LISTAR POR CIUDAD");
+        listarciudad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listarciudadActionPerformed(evt);
+            }
+        });
 
         listarrangoid.setText("LISTAR POR RANGO DE ID");
 
@@ -185,8 +190,18 @@ public class interfaz extends javax.swing.JFrame {
         listaralfa.setText("LISTAR ALFABETICAMENTE");
 
         editar.setText("Editar");
+        editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editarActionPerformed(evt);
+            }
+        });
 
         Borrar.setText("Borrar");
+        Borrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BorrarActionPerformed(evt);
+            }
+        });
 
         lopcioneslistar.setText("OPCIONES LISTAR");
 
@@ -420,6 +435,106 @@ public class interfaz extends javax.swing.JFrame {
     private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_emailActionPerformed
+
+    private void BorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarActionPerformed
+        Connection con = conectar();
+        if (con != null) {
+            if (!telefono.getText().isEmpty()) {
+                String query = "DELETE FROM datos WHERE telefono = '" + telefono.getText() + "';";
+                try {
+                    // preparo la consulta
+                    PreparedStatement preparar = con.prepareStatement(query);
+                    // ejecuto la consulta
+                    preparar.executeUpdate();
+                    salida.setText("Contacto eliminado correctamente.");
+                } catch (SQLException ex) {
+                    salida.setText("Error al eliminar el contacto.");
+                }
+            } else {
+                salida.setText("No hay telefono");
+            }
+        } else {
+            salida.setText("Error conexión incorrecta.");
+        }
+    }//GEN-LAST:event_BorrarActionPerformed
+
+    private void editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarActionPerformed
+        Connection con = conectar();
+        if (con != null) {
+            if (!nombres.getText().isEmpty()
+                    && !apellidos.getText().isEmpty()
+                    && !telefono.getText().isEmpty()
+                    && !direccion.getText().isEmpty()
+                    && !email.getText().isEmpty()) {
+
+                String query = "UPDATE datos SET nombres='" + nombres.getText()
+                        + "', apellidos='" + apellidos.getText()
+                        + "', telefono='" + telefono.getText()
+                        + "', direccion='" + direccion.getText()
+                        + "' WHERE email='" + email.getText() + "';";
+
+                try {
+                    // preparo la consulta
+                    PreparedStatement preparar = con.prepareStatement(query);
+                    // ejecuto la consulta
+                    preparar.executeUpdate();
+                    salida.setText("Contacto se ha actualizado correctamente");
+                } catch (SQLException ex) {
+                    salida.setText("Error al intentear actualizar el contacto");
+                }
+            } else {
+                salida.setText("No hay datos para actualizar, los campos estan vacios");
+            }
+        } else {
+            salida.setText("Error conexión incorrecta.");
+        }
+    }//GEN-LAST:event_editarActionPerformed
+
+    private void listarciudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listarciudadActionPerformed
+        Connection con = conectar();
+
+        if (con != null) {
+            if (!direccion.getText().isEmpty()) {
+                String query = "SELECT nombres, apellidos, telefono, direccion, email "
+                        + "FROM datos WHERE direccion LIKE ?";
+
+                try {
+                    PreparedStatement preparar = con.prepareStatement(query);
+                    preparar.setString(1, "%" + direccion.getText() + "%");
+                    ResultSet rs = preparar.executeQuery();
+                    String resultado = "";
+
+                    // Para Recorrer los resultados encontrados
+                    while (rs.next()) {
+                        resultado += "Nombre: " + rs.getString("nombres") + " " + rs.getString("apellidos") + "\n"
+                                + "Teléfono: " + rs.getString("telefono") + "\n"
+                                + "Dirección: " + rs.getString("direccion") + "\n"
+                                + "Email: " + rs.getString("email") + "\n\n";
+                    }
+
+                    // Si no encontró resultados
+                    if (resultado.isEmpty()) {
+                        salida.setText("No se encontraron contactos en esa ciudad.");
+                    } else {
+                        salida.setText(resultado);
+                    }
+
+                    preparar.close();
+                    con.close();
+
+                } catch (SQLException ex) {
+                    salida.setText("Error al listar los contactos: " + ex.getMessage());
+                }
+
+            } else {
+                salida.setText("Debe ingresar una ciudad para buscar.");
+            }
+
+        } else {
+            salida.setText("Error: conexión incorrecta.");
+        }
+
+    }//GEN-LAST:event_listarciudadActionPerformed
 
     /**
      * @param args the command line arguments
