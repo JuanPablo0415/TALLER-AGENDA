@@ -249,7 +249,7 @@ public class interfaz extends javax.swing.JFrame {
                                 .addComponent(editar)
                                 .addGap(28, 28, 28)
                                 .addComponent(Borrar)
-                                .addGap(0, 477, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -265,7 +265,7 @@ public class interfaz extends javax.swing.JFrame {
                                 .addGap(69, 69, 69)))))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(195, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -364,10 +364,20 @@ public class interfaz extends javax.swing.JFrame {
 
     private void agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarActionPerformed
         Connection con = conectar();
-        if (con == null) {
-            salida.setText("No hay conexion con la base de datos");
+
+        String nombreTxt = nombres.getText().trim();
+        String apellidoTxt = apellidos.getText().trim();
+        String telefonoTxt = telefono.getText().trim();
+        String direccionTxt = direccion.getText().trim();
+        String emailTxt = email.getText().trim();
+
+        if (nombreTxt.isEmpty() || apellidoTxt.isEmpty() || telefonoTxt.isEmpty()
+                || direccionTxt.isEmpty() || emailTxt.isEmpty()) {
+            salida.setText("Por favor complete todos los campos antes de agregar el contacto.");
             return;
-        } else {
+        }
+
+        if (con != null) {
             String query = "INSERT INTO datos(id,nombres,apellidos,telefono,direccion,email) VALUES (null,'" + nombres.getText() + "','" + apellidos.getText() + "','" + telefono.getText() + "','" + direccion.getText() + "','" + email.getText() + "');";
             try {
                 //preparo la consulta
@@ -378,6 +388,9 @@ public class interfaz extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 salida.setText("Error en la consulta");
             }
+        } else {
+            salida.setText("No hay conexion con la base de datos");
+            return;
         }
     }//GEN-LAST:event_agregarActionPerformed
 
