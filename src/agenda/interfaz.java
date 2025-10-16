@@ -1008,12 +1008,26 @@ public class interfaz extends javax.swing.JFrame {
                 while (resultado.next()) {
                     modelo.addRow(new Object[]{resultado.getInt("id"), (""), (""), (""), (""), ("")});
                 }
-            } else if (seleccion.equals("nombres")) {
+            }if (seleccion.equals("nombres")) {
                 while (resultado.next()) {
                     modelo.addRow(new Object[]{(""), resultado.getString("nombres"), (""), (""), (""), ("")});
                 }
-            }else if(seleccion.equals("apellidos")){
-                
+            }if(seleccion.equals("apellidos")){
+               while (resultado.next()) {
+                    modelo.addRow(new Object[]{(""), (""), resultado.getString("apellidos"), (""), (""), ("")});
+                }  
+            }if(seleccion.equals("telefono")){
+                 while (resultado.next()) {
+                    modelo.addRow(new Object[]{(""), (""), (""), resultado.getString("telefono"), (""), ("")});
+                }  
+            }if(seleccion.equals("direccion")){
+               while (resultado.next()) {
+                    modelo.addRow(new Object[]{(""), (""), (""), (""), resultado.getString("direccion"), ("")});
+                }   
+            }if(seleccion.equals("email")){
+               while (resultado.next()) {
+                    modelo.addRow(new Object[]{(""), (""), (""), (""), (""), resultado.getString("email")});
+                }    
             }
 
             
